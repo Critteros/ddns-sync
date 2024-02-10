@@ -114,7 +114,7 @@ mod tests {
 
     #[tokio::test]
     #[serial]
-    async fn test_check_ipv6_remebers_change() {
+    async fn test_check_ipv6_remembers_change() {
         reset_state().await;
 
         let ip: Ipv6Addr = "::".parse().unwrap();
