@@ -3,6 +3,8 @@ use std::time::Duration;
 use tokio::time;
 
 mod state;
+mod ip_discovery;
+
 
 #[tokio::main]
 async fn main() {
@@ -12,6 +14,9 @@ async fn main() {
 
     loop {
         interval.tick().await;
-        tokio::spawn(async { println!("Hello World"); });
+        tokio::spawn(async {
+            let ip = ip_discovery::ipv4_lookup().await.unwrap();
+            println!("Ipv4: {ip}");
+        });
     }
 }
