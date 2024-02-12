@@ -14,9 +14,9 @@ async fn main() {
 
     loop {
         interval.tick().await;
-        tokio::spawn(async {
-            let ip = ip_discovery::ipv4_lookup().await.unwrap();
-            println!("Ipv4: {ip}");
-        });
+        // tokio::spawn(async {
+        //     // let ip = ip_discovery::ipv4_lookup().await.unwrap();
+        //     println!("Ipv4: {ip}");
+        // });
     }
 }
