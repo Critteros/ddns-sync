@@ -1,1 +1,3 @@
 /target
+.env
+*.private.env.json
