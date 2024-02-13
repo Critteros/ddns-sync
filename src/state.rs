@@ -23,7 +23,10 @@ pub enum ChangeStatus<T> {
     Unknown(T),
 }
 
-impl<T> ChangeStatus<T> where T: Eq + Clone {
+impl<T> ChangeStatus<T>
+where
+    T: Eq + Clone,
+{
     pub fn into_inner(self) -> T {
         match self {
             ChangeStatus::Unchanged(ip) => ip,
@@ -37,7 +40,10 @@ impl<T> ChangeStatus<T> where T: Eq + Clone {
             Some(old_value) if old_value == new => ChangeStatus::Unchanged(new),
             Some(old_value) => {
                 *option_ref = Some(new.clone());
-                ChangeStatus::Changed { old: old_value, new }
+                ChangeStatus::Changed {
+                    old: old_value,
+                    new,
+                }
             }
             None => {
                 *option_ref = Some(new.clone());
@@ -52,7 +58,6 @@ impl ChangeStatus<Ipv4Addr> {
         ChangeStatus::check_and_replace(ip, &mut get_state().lock().await.deref_mut().ipv4)
     }
 }
-
 
 impl ChangeStatus<Ipv6Addr> {
     pub async fn check_ipv6_changed(ip: Ipv6Addr) -> ChangeStatus<Ipv6Addr> {
@@ -78,7 +83,10 @@ mod tests {
         reset_state().await;
 
         let ip: Ipv4Addr = "127.0.0.1".parse().unwrap();
-        assert_eq!(ChangeStatus::check_ipv4_changed(ip).await, ChangeStatus::Unknown(ip));
+        assert_eq!(
+            ChangeStatus::check_ipv4_changed(ip).await,
+            ChangeStatus::Unknown(ip)
+        );
     }
 
     #[tokio::test]
@@ -88,7 +96,10 @@ mod tests {
 
         let ip: Ipv4Addr = "127.0.0.1".parse().unwrap();
         ChangeStatus::check_ipv4_changed(ip).await;
-        assert_eq!(ChangeStatus::check_ipv4_changed(ip).await, ChangeStatus::Unchanged(ip));
+        assert_eq!(
+            ChangeStatus::check_ipv4_changed(ip).await,
+            ChangeStatus::Unchanged(ip)
+        );
     }
 
     #[tokio::test]
@@ -100,7 +111,13 @@ mod tests {
         ChangeStatus::check_ipv4_changed(old_ip).await;
 
         let new_ip: Ipv4Addr = "127.0.0.2".parse().unwrap();
-        assert_eq!(ChangeStatus::check_ipv4_changed(new_ip).await, ChangeStatus::Changed { old: old_ip, new: new_ip });
+        assert_eq!(
+            ChangeStatus::check_ipv4_changed(new_ip).await,
+            ChangeStatus::Changed {
+                old: old_ip,
+                new: new_ip
+            }
+        );
     }
 
     #[tokio::test]
@@ -109,7 +126,10 @@ mod tests {
         reset_state().await;
 
         let ip: Ipv6Addr = "::".parse().unwrap();
-        assert_eq!(ChangeStatus::check_ipv6_changed(ip).await, ChangeStatus::Unknown(ip));
+        assert_eq!(
+            ChangeStatus::check_ipv6_changed(ip).await,
+            ChangeStatus::Unknown(ip)
+        );
     }
 
     #[tokio::test]
@@ -120,7 +140,10 @@ mod tests {
         let ip: Ipv6Addr = "::".parse().unwrap();
         ChangeStatus::check_ipv6_changed(ip).await;
 
-        assert_eq!(ChangeStatus::check_ipv6_changed(ip).await, ChangeStatus::Unchanged(ip));
+        assert_eq!(
+            ChangeStatus::check_ipv6_changed(ip).await,
+            ChangeStatus::Unchanged(ip)
+        );
     }
 
     #[tokio::test]
@@ -132,6 +155,9 @@ mod tests {
         ChangeStatus::check_ipv6_changed(old).await;
 
         let new: Ipv6Addr = "::2".parse().unwrap();
-        assert_eq!(ChangeStatus::check_ipv6_changed(new).await, ChangeStatus::Changed { old, new })
+        assert_eq!(
+            ChangeStatus::check_ipv6_changed(new).await,
+            ChangeStatus::Changed { old, new }
+        )
     }
 }

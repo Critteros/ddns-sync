@@ -6,7 +6,7 @@ use clap::Parser;
 #[command(version, author, about)]
 pub struct Config {
     #[arg(long, env("CLOUDFLARE_API_KEY"))]
-    cloudflare_api_key: String
+    pub cloudflare_api_key: String,
 }
 
 impl Config {
@@ -20,4 +20,3 @@ pub fn get_config() -> &'static Config {
     static CONFIG: OnceLock<Config> = OnceLock::new();
     CONFIG.get_or_init(|| Config::new())
 }
-
