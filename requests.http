@@ -1,5 +1,0 @@
-GET https://api.cloudflare.com/client/v4/user/tokens/verify
-Accept: application/json
-Authorization: Bearer {{cloudflareApiToken}}
-
-###

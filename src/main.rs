@@ -1,27 +1,32 @@
-use std::time::Duration;
-
-use tokio::time;
-
-mod cloudflare;
+#![allow(async_fn_in_trait)]
 mod config;
-mod ip_discovery;
-mod state;
+mod ip_lookup;
+mod utils;
+
+use cloudflare_adapter::prelude::*;
+use cloudflare_adapter::CloudflareClient;
+
+use crate::ip_lookup::lookup_public_ip;
 
 #[tokio::main]
 async fn main() {
     pretty_env_logger::init();
+    let config = config::get_config();
+    println!("Config: {:?}", config);
+    let cloudflare_client = CloudflareClient::new(config.cloudflare_api_key.clone());
+    let is_token_valid = cloudflare_client.verify_token().await.unwrap();
+    println!("Token is valid: {}", is_token_valid);
+    let zones = cloudflare_client.list_zones().await.unwrap();
+    println!("Zones: {:?}", zones);
 
-    let mut interval = time::interval(Duration::from_secs(3));
-    println!("{:?}", config::get_config());
+    let main_zone = &zones[0].id;
 
-    let api = cloudflare::CloudflareApi::from_config(config::get_config());
-    println!("{:?}", api.check_token().await.unwrap());
+    let public_ip = lookup_public_ip().await.unwrap();
+    println!("Public IP: {}", public_ip);
 
-    // loop {
-    //     interval.tick().await;
-    //     // tokio::spawn(async {
-    //     //     // let ip = ip_discovery::ipv4_lookup().await.unwrap();
-    //     //     println!("Ipv4: {ip}");
-    //     // });
-    // }
+    let dns_records = cloudflare_client
+        .dns_records_for_zone(main_zone)
+        .await
+        .unwrap();
+    println!("DNS Records: {:?}", dns_records);
 }

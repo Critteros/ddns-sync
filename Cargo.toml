@@ -5,16 +5,23 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Szymon Kozioł <contact@critteros.dev>"]
 
+[workspace]
+members = [
+    "cloudflare-adapter",
+]
+
 [dependencies]
 log = "0.4.20"
 pretty_env_logger = "0.5.0"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0.113", features = ["derive"] }
 serde_json = "1.0.113"
-serial_test = "3.0.0"
 reqwest = { version = "0.11", features = ["json"] }
 thiserror = "1.0.57"
-anyhow = "1.0.79"
-mockito = "1.2.0"
 clap = { version = "4.5.0", features = ["derive", "env"] }
 dotenv = "0.15.0"
+cloudflare-adapter = { path = "cloudflare-adapter" }
+
+[dev-dependencies]
+mockito = "1.2.0"
+rstest = "0.20.0"
