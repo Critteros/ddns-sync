@@ -1,0 +1,14 @@
+name: ddns-sync
+
+services:
+  ddns-sync:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    pull_policy: build
+    image: ddns-sync
+    container_name: ddns-sync
+    environment:
+      - RUST_LOG=${RUST_LOG:-debug}
+      - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY:?}

@@ -1,7 +1,7 @@
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
 use reqwest::Client;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct CloudflareClient {
     pub(crate) client: Client,
 }

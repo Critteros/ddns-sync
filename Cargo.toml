@@ -6,9 +6,7 @@ edition = "2021"
 authors = ["Szymon Kozioł <contact@critteros.dev>"]
 
 [workspace]
-members = [
-    "cloudflare-adapter",
-]
+members = ["cloudflare-adapter"]
 
 [dependencies]
 log = "0.4.20"
@@ -16,11 +14,14 @@ pretty_env_logger = "0.5.0"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0.113", features = ["derive"] }
 serde_json = "1.0.113"
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { version = "0.12.4", features = ["json"] }
 thiserror = "1.0.57"
 clap = { version = "4.5.0", features = ["derive", "env"] }
 dotenv = "0.15.0"
 cloudflare-adapter = { path = "cloudflare-adapter" }
+anyhow = { version = "1.0.86", features = ["backtrace"] }
+tokio-cron-scheduler = { version = "*", features = ["signal"] }
+ctrlc = "3.4"
 
 [dev-dependencies]
 mockito = "1.2.0"

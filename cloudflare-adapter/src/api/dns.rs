@@ -19,8 +19,17 @@ pub struct DnsARecord {
 pub trait DnsLookupApi {
     const DNS_RECORDS_FOR_ZONE_URL: &'static str =
         "https://api.cloudflare.com/client/v4/zones/{}/dns_records";
+    const DNS_RECORD_UPDATE_URL: &'static str =
+        "https://api.cloudflare.com/client/v4/zones/{}/dns_records/{}";
     #[allow(non_snake_case)]
     async fn dns_A_records_for_zone(&self, zone_id: &str) -> Result<Vec<DnsARecord>, ApiError>;
+    #[allow(non_snake_case)]
+    async fn update_dns_A_record_ip(
+        &self,
+        zone_id: &str,
+        dns_record_id: &str,
+        new_ip: Ipv4Addr,
+    ) -> Result<(), ApiError>;
 }
 
 impl DnsLookupApi for crate::CloudflareClient {
@@ -46,6 +55,27 @@ impl DnsLookupApi for crate::CloudflareClient {
             .collect();
 
         return Ok(a_records);
+    }
+
+    #[allow(non_snake_case)]
+    async fn update_dns_A_record_ip(
+        &self,
+        zone_id: &str,
+        dns_record_id: &str,
+        new_ip: Ipv4Addr,
+    ) -> Result<(), ApiError> {
+        let url = Self::DNS_RECORD_UPDATE_URL.format(&[zone_id, dns_record_id]);
+        let body = serde_json::json!({
+            "type": "A",
+            "content": new_ip.to_string(),
+        });
+
+        let response = self.client.patch(&url).json(&body).send().await?;
+        if response.status().is_success() {
+            Ok(())
+        } else {
+            Err(ApiError::InvalidResponse)
+        }
     }
 }
 
