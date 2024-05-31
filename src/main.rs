@@ -25,7 +25,7 @@ async fn main() {
     println!("Public IP: {}", public_ip);
 
     let dns_records = cloudflare_client
-        .dns_records_for_zone(main_zone)
+        .dns_A_records_for_zone(main_zone)
         .await
         .unwrap();
     println!("DNS Records: {:?}", dns_records);
