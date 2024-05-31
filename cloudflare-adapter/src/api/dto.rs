@@ -15,4 +15,5 @@ pub struct DnsEntry {
     #[serde(rename = "type")]
     pub dns_record_type: String,
     pub content: String,
+    pub comment: Option<String>,
 }

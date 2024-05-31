@@ -13,6 +13,7 @@ pub struct DnsARecord {
     pub zone_name: String,
     pub name: String,
     pub ip: Ipv4Addr,
+    pub comment: Option<String>,
 }
 
 pub trait DnsLookupApi {
@@ -38,6 +39,7 @@ impl DnsLookupApi for crate::CloudflareClient {
                     zone_id: record.zone_id,
                     zone_name: record.zone_name,
                     id: record.id,
+                    comment: record.comment,
                 })
             })
             .filter_map(|result| result.ok())
