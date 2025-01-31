@@ -9,10 +9,8 @@ type DnsRecords = Vec<DnsEntry>;
 #[derive(Debug, PartialEq, Eq)]
 pub struct DnsARecord {
     pub id: String,
-    pub zone_id: String,
-    pub zone_name: String,
     pub name: String,
-    pub ip: Ipv4Addr,
+    pub content: Ipv4Addr,
     pub comment: Option<String>,
 }
 
@@ -43,10 +41,8 @@ impl DnsLookupApi for crate::CloudflareClient {
             .into_iter()
             .map(|record| -> Result<DnsARecord, std::net::AddrParseError> {
                 Ok(DnsARecord {
-                    ip: record.content.parse()?,
+                    content: record.content.parse()?,
                     name: record.name,
-                    zone_id: record.zone_id,
-                    zone_name: record.zone_name,
                     id: record.id,
                     comment: record.comment,
                 })
