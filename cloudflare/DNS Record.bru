@@ -1,0 +1,15 @@
+meta {
+  name: DNS Record
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://api.cloudflare.com/client/v4/zones/:zone_id/dns_records
+  body: none
+  auth: inherit
+}
+
+params:path {
+  zone_id: {{MAIN_ZONE_ID}}
+}
